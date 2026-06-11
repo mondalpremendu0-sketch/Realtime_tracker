@@ -11,6 +11,9 @@ async function startSocketServer(httpServer) {
         socket.on("disconnect", () => {
             console.log("user disconnected",socket.id); // undefined
         });
+        socket.on('send-location', (data) => {
+            io.emit('receive-location', { id: socket.id, ...data });
+        });
     });
 }
 
