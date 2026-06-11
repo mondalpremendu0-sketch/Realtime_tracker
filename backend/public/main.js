@@ -1,8 +1,3 @@
-//alert("My JavaScript is successfully loading!");
-
-//const socket = io();
-//const map = L.map('map').setView([0, 0], 2);
-// ... the rest of your code
 
 const socket = io("http://localhost:3000");
 const map = L.map('map').setView([0, 0], 2);
