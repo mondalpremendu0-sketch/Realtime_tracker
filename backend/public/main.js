@@ -1,4 +1,9 @@
-const { io } = require("socket.io-client");
+//alert("My JavaScript is successfully loading!");
+
+//const socket = io();
+//const map = L.map('map').setView([0, 0], 2);
+// ... the rest of your code
+
 const socket = io("http://localhost:3000");
 const map = L.map('map').setView([0, 0], 2);
 
@@ -26,7 +31,9 @@ function getColorFromId(id) {
 }
 
 // --- SOCKET LISTENERS ---
-
+socket.on("connection",(socket) => {
+  console.log("user connected: ",socket.id);
+})
 socket.on('current-users', (users) => {
     for (const id in users) {
         if (!markers[id]) {
@@ -60,7 +67,7 @@ socket.on('receive-location', (data) => {
     }
 });
 
-socket.on('user-disconnected', (id) => {
+socket.on('disconnect', (id) => {
     if (markers[id]) {
         map.removeLayer(markers[id]);
         delete markers[id];
@@ -80,9 +87,10 @@ if (navigator.geolocation) {
         }
     }, (error) => {
         console.error("Geolocation error:", error);
+        alert(error.message)
     }, {
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 15000,
         maximumAge: 0
     });
 } else {

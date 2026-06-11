@@ -1,12 +1,33 @@
-const { createServer } = require("http");
+const express = require('express');
+const http = require('http');
+const path = require('path');
 const { Server } = require("socket.io");
-const app = require("./src/app.js");
-const startSocketServer = require("./src/sockets/socketIo.js");
 
-const httpServer = createServer(app);
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
-startSocketServer(httpServer);
+// 1. THE STATIC FIX: Serve the public folder directly next to this file
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
 
-httpServer.listen(3000, () => {
-    console.log("Server is running in port 3000");
+// 2. SOCKET.IO LOGIC: All in one place
+io.on("connection", socket => {
+    console.log("User connected: ", socket.id);
+
+    socket.on('send-location', (data) => {
+        io.emit('receive-location', { id: socket.id, ...data });
+    });
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected: ", socket.id);
+        io.emit('user-disconnected', socket.id);
+    });
+});
+
+// 3. START THE SERVER
+const PORT = 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Serving static files from: ${publicPath}`);
 });

@@ -1,9 +1,11 @@
 body {
     margin: 0;
     padding: 0;
+  
 }
 /* Ensure the map takes up the full browser window */
 #map {
     width: 100%;
     height: 100vh;
+    
 }
